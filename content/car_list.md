@@ -12,6 +12,7 @@
 **価格**：$3,000,000  
 - ハンドリング：普  
 - スピード：良  
+![pdvjv(EMS)](assets/images/pdvjv.png)
 
 ---
 
