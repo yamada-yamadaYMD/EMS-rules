@@ -4,7 +4,7 @@
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
   <title>Sorcery City EMS</title>
-  <meta name="description" content="Sorcery City EMS ルール/SOP 公開ページ" />
+  <meta name="description" content="Sorcery City EMS ルール公開ページ" />
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
   <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+JP:wght@400;600;800&display=swap" rel="stylesheet">
@@ -17,15 +17,16 @@
         <span class="emoji" id="brandEmoji">🚑</span>
         <div>
           <div class="title" id="siteTitle">Sorcery City EMS</div>
-          <div class="tagline" id="tagline">ルール / SOP / 料金表 / テンプレ</div>
+          <div class="tagline" id="tagline">ルール / 公開ページ</div>
         </div>
       </div>
 
       <div class="actions">
         <a class="btn ghost" href="./" aria-current="page">ホーム</a>
-        <a class="btn ghost" href="#rules">ルール</a>
-        <a class="btn ghost" href="#faq">FAQ</a>
-        <a class="btn ghost" href="#templates">テンプレ</a>
+        <a class="btn ghost" href="#ems-rule">EMSルール</a>
+        <a class="btn ghost" href="#ems-care">EMS対応</a>
+        <a class="btn ghost" href="#ems-rank">昇進基準</a>
+        <a class="btn ghost" href="#cars">車リスト</a>
         <a class="btn primary" id="discordBtn" href="#" target="_blank" rel="noreferrer">Discord</a>
       </div>
     </header>
@@ -33,14 +34,21 @@
     <main class="layout">
       <aside class="sidebar">
         <div class="card">
-          <div class="cardTitle">検索</div>
-          <input id="searchInput" class="input" placeholder="例: 蘇生 / 料金 / PD" />
-          <div class="hint">一致した箇所をハイライトします</div>
+          <div class="cardTitle">検索（表示中のページ）</div>
+          <input id="searchInput" class="input" placeholder="例: 蘇生 / 無線 / 退勤" />
+          <div class="hint">表示中のページ内だけをハイライトします</div>
         </div>
 
         <div class="card">
-          <div class="cardTitle">目次</div>
-          <nav id="toc" class="toc"></nav>
+          <div class="cardTitle">目次（タブ）</div>
+          <nav id="toc" class="toc">
+            <a href="#ems-rule" data-page="ems_rules">EMSルール</a>
+            <a href="#ems-care" data-page="ems_response">EMS対応</a>
+            <a href="#ems-rank" data-page="ems_promotion">EMS職業別昇進基準</a>
+            <a href="#cars" data-page="car_list">車リスト</a>
+            <a href="#report" data-page="report_guide">救急隊報告書説明</a>
+          </nav>
+          <div class="hint">※左のタブは固定。中身はMarkdownを読み込みます</div>
         </div>
 
         <div class="card">
@@ -60,111 +68,44 @@
       <section class="content">
         <section class="hero">
           <div class="heroCard">
-            <h1>EMS 公式ページ</h1>
+            <h1>EMS ルール</h1>
             <p>
-              ここには <b>ルール / SOP / 料金 / テンプレ</b> をまとめています。
-              出動時に迷ったら、このページを見ればOK。
+              Googleドキュメントのタブ構成に合わせて掲載しています。<br>
+              左の目次から切り替えてください。
             </p>
             <div class="heroBtns">
-              <a class="btn primary" href="#rules">ルールを見る</a>
-              <a class="btn ghost" href="#checklist">チェックリスト</a>
+              <a class="btn primary" href="#ems-rule">EMSルールを見る</a>
+              <a class="btn ghost" href="#ems-care">EMS対応</a>
             </div>
             <div class="note">
-              ※内容の [TBD] は運営が確定してください（蘇生上限、階級、連絡先など）
+              ※内容の編集は <code>content/*.md</code> を更新してください
             </div>
           </div>
 
           <div class="miniCards">
             <div class="mini">
-              <div class="miniT">基本方針</div>
-              <div class="miniD">安全最優先 / 中立 / 手順RP</div>
+              <div class="miniT">タブ構成</div>
+              <div class="miniD">Docsと同じ並び</div>
             </div>
             <div class="mini">
-              <div class="miniT">重要NG</div>
-              <div class="miniD">談合請求 / 蘇生ループ / メタ</div>
+              <div class="miniT">検索</div>
+              <div class="miniD">表示中ページのみ</div>
             </div>
             <div class="mini">
-              <div class="miniT">困ったら</div>
-              <div class="miniD">Supervisor / 運営へ報告</div>
+              <div class="miniT">公開</div>
+              <div class="miniD">GitHub Pages対応</div>
             </div>
           </div>
         </section>
 
-        <section id="rules" class="section">
+        <section id="page" class="section">
           <div class="sectionHead">
-            <h2>ルール / SOP</h2>
-            <div class="pill">Markdownから自動表示</div>
-          </div>
-          <article id="rulesContainer" class="md"></article>
-        </section>
-
-        <section id="faq" class="section">
-          <div class="sectionHead">
-            <h2>FAQ</h2>
-            <div class="pill">content/faq.json</div>
-          </div>
-          <div id="faqContainer" class="faq"></div>
-        </section>
-
-        <section id="templates" class="section">
-          <div class="sectionHead">
-            <h2>テンプレ（コピペ用）</h2>
-            <div class="pill">現場で使える</div>
+            <h2 id="pageTitle">—</h2>
+            <div class="pill" id="pagePill">content/*.md</div>
           </div>
 
-          <div class="grid2">
-            <div class="card">
-              <div class="cardTitle">出動記録</div>
-              <pre class="pre">日時：
-EMS名：
-現場：
-内容：
-処置：
-搬送：
-請求：
-追加メモ：</pre>
-              <button class="btn ghost copyBtn" data-copy="dispatch">コピー</button>
-            </div>
-
-            <div class="card">
-              <div class="cardTitle">インシデント報告</div>
-              <pre class="pre">相手：
-何が起きた：
-証拠（クリップ/SS）：
-対応：</pre>
-              <button class="btn ghost copyBtn" data-copy="incident">コピー</button>
-            </div>
-          </div>
-        </section>
-
-        <section id="checklist" class="section">
-          <div class="sectionHead">
-            <h2>チェックリスト</h2>
-            <div class="pill">現場 / 病院</div>
-          </div>
-
-          <div class="grid2">
-            <div class="card">
-              <div class="cardTitle">現場</div>
-              <ul class="check">
-                <li><input type="checkbox"> 危険確認（銃声/ギャング/事故）</li>
-                <li><input type="checkbox"> PD要請 or 応援要請</li>
-                <li><input type="checkbox"> トリアージ（重症優先）</li>
-                <li><input type="checkbox"> 処置RP（説明→処置→搬送）</li>
-                <li><input type="checkbox"> 引き継ぎ/ログ</li>
-              </ul>
-            </div>
-
-            <div class="card">
-              <div class="cardTitle">病院</div>
-              <ul class="check">
-                <li><input type="checkbox"> 到着報告</li>
-                <li><input type="checkbox"> 処置内容のまとめ</li>
-                <li><input type="checkbox"> 請求・記録</li>
-                <li><input type="checkbox"> 退勤前確認</li>
-              </ul>
-            </div>
-          </div>
+          <!-- ここにMarkdownが表示される -->
+          <article id="pageContainer" class="md"></article>
         </section>
 
         <footer class="footer">
