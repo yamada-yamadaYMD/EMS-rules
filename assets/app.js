@@ -10,6 +10,44 @@ async function loadText(path){
   return await res.text();
 }
 
+function buildTOC(container){
+  const toc = document.getElementById('toc');
+  toc.innerHTML = '';
+  const headings = container.querySelectorAll('h2, h3');
+  headings.forEach(h => {
+    if(!h.id){
+      h.id = 'h-' + Math.random().toString(36).slice(2, 9);
+    }
+    const a = document.createElement('a');
+    a.href = '#' + h.id;
+    a.textContent = h.textContent;
+    a.className = (h.tagName === 'H3') ? 'lvl3' : 'lvl2';
+    toc.appendChild(a);
+  });
+}
+
+function buildFAQ(items){
+  const root = document.getElementById('faqContainer');
+  root.innerHTML = '';
+  items.forEach((it) => {
+    const wrap = document.createElement('div');
+    wrap.className = 'faqItem';
+
+    const btn = document.createElement('button');
+    btn.className = 'faqQ';
+    btn.innerHTML = `<span>${escapeHTML(it.q)}</span><span class="chev">▾</span>`;
+    btn.addEventListener('click', () => wrap.classList.toggle('open'));
+
+    const ans = document.createElement('div');
+    ans.className = 'faqA';
+    ans.textContent = it.a;
+
+    wrap.appendChild(btn);
+    wrap.appendChild(ans);
+    root.appendChild(wrap);
+  });
+}
+
 function escapeHTML(s){
   return String(s).replace(/[&<>"']/g, (c) => ({
     '&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'
@@ -60,99 +98,60 @@ function highlight(root, query){
   });
 }
 
-const PAGES = [
-  { key:'ems_rules',     hash:'#ems-rule', title:'EMSルール',           file:'./content/ems_rules.md' },
-  { key:'ems_response',  hash:'#ems-care', title:'EMS対応',             file:'./content/ems_response.md' },
-  { key:'ems_promotion', hash:'#ems-rank', title:'EMS職業別昇進基準',   file:'./content/ems_promotion.md' },
-  { key:'car_list',      hash:'#cars',     title:'車リスト',            file:'./content/car_list.md' },
-  { key:'report_guide',  hash:'#report',   title:'救急隊報告書説明',    file:'./content/report_guide.md' },
-];
-
-function getPageByHash(hash){
-  return PAGES.find(p => p.hash === hash) || PAGES[0];
-}
-
-function setActiveTOC(pageKey){
-  document.querySelectorAll('#toc a[data-page]').forEach(a => {
-    if(a.dataset.page === pageKey){
-      a.style.background = 'rgba(255,255,255,.06)';
-      a.style.borderColor = 'rgba(255,255,255,.10)';
-    }else{
-      a.style.background = '';
-      a.style.borderColor = '';
-    }
+function bindCopyButtons(){
+  document.querySelectorAll('.copyBtn').forEach(btn => {
+    btn.addEventListener('click', async () => {
+      const pre = btn.parentElement.querySelector('pre');
+      if(!pre) return;
+      try{
+        await navigator.clipboard.writeText(pre.textContent);
+        btn.textContent = 'コピーした！';
+        setTimeout(() => btn.textContent = 'コピー', 1000);
+      }catch(e){
+        alert('コピーできませんでした（ブラウザ権限を確認）');
+      }
+    });
   });
 }
 
-async function renderPage(page){
-  const container = document.getElementById('pageContainer');
-  const title = document.getElementById('pageTitle');
-  const pill = document.getElementById('pagePill');
-
-  title.textContent = page.title;
-  pill.textContent = page.file.replace('./content/','content/');
-
-  // 検索欄リセット（ページ切り替えでハイライト残さない）
-  const input = document.getElementById('searchInput');
-  input.value = '';
-
-  const md = await loadText(page.file);
-  const html = marked.parse(md, { mangle:false, headerIds:true });
-  container.innerHTML = html;
-
-  setActiveTOC(page.key);
-
-  // タイトル更新
-  document.title = `${page.title} | EMS`;
-}
-
 async function main(){
-  // config
+  // load config
   const cfg = await loadJSON('./assets/config.json');
-  document.getElementById('siteTitle').textContent = cfg.siteTitle || 'EMS';
-  document.getElementById('tagline').textContent = cfg.tagline || '';
+  document.title = `${cfg.siteTitle} | Rules`;
+  document.getElementById('siteTitle').textContent = cfg.siteTitle;
+  document.getElementById('tagline').textContent = cfg.tagline;
   document.getElementById('brandEmoji').textContent = cfg.brandEmoji || '🚑';
   document.getElementById('lastUpdated').textContent = cfg.lastUpdated || '—';
   document.getElementById('contact').textContent = cfg.contact || '—';
 
   const discordBtn = document.getElementById('discordBtn');
   discordBtn.href = cfg.discord && cfg.discord !== '[TBD]' ? cfg.discord : '#';
-  if(discordBtn.href.endsWith('#')){
-    discordBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      alert('Discordリンクが未設定です。assets/config.json を編集してね。');
-    });
-  }
-
-  // toc click
-  document.querySelectorAll('#toc a[data-page]').forEach(a => {
-    a.addEventListener('click', async (e) => {
-      e.preventDefault();
-      const page = PAGES.find(p => p.key === a.dataset.page) || PAGES[0];
-      history.replaceState(null, '', page.hash);
-      await renderPage(page);
-    });
+  if(discordBtn.href.endsWith('#')) discordBtn.addEventListener('click', (e) => {
+    e.preventDefault();
+    alert('Discordリンクが未設定です。assets/config.json を編集してね。');
   });
 
-  // 初期表示（hashから）
-  const start = getPageByHash(location.hash);
-  await renderPage(start);
+  // load markdown
+  const md = await loadText('./content/rules.md');
+  const html = marked.parse(md, { mangle:false, headerIds:true });
+  const rules = document.getElementById('rulesContainer');
+  rules.innerHTML = html;
 
-  // hash change（戻る/進む）
-  window.addEventListener('hashchange', async () => {
-    const page = getPageByHash(location.hash);
-    await renderPage(page);
-  });
+  // build toc
+  buildTOC(rules);
+
+  // faq
+  const faq = await loadJSON('./content/faq.json');
+  buildFAQ(faq);
 
   // search
   const input = document.getElementById('searchInput');
-  input.addEventListener('input', () => {
-    const root = document.getElementById('pageContainer');
-    highlight(root, input.value.trim());
-  });
+  input.addEventListener('input', () => highlight(rules, input.value.trim()));
+
+  bindCopyButtons();
 }
 
 main().catch(err => {
   console.error(err);
-  alert('読み込みに失敗しました。content/*.md の存在とパスを確認してください。');
+  alert('読み込みに失敗しました。GitHub Pagesのパス/ファイル配置を確認してください。');
 });
