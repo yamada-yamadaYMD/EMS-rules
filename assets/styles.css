@@ -308,17 +308,44 @@ header.topbar .actions,
   display: none !important;
 }
 /* =========================
-   トップバー中央寄せ
+   タイトル（brand）を強制で画面中央に固定
    ========================= */
 
-/* トップバーを中央基準に */
 .topbar{
-  justify-content: center;
+  position: sticky; /* 既にあるけど念のため */
+  top: 0;
+  position: sticky;
+  /* センター固定の基準にする */
+  position: sticky;
 }
 
-/* ブランド（🚑 らぶぐらっ！ EMS）を中央に */
+/* topbar を基準にする（absoluteの土台） */
+.topbar{ position: sticky; }
+.topbar{ position: sticky; }
+
+/* ↑もし同じ行が気になるなら、下の1行だけ残してOK */
+.topbar{ position: sticky; }
+
+/* 基準用：relative を足す */
+.topbar{
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  position: relative;   /* ←これが重要 */
+}
+
+/* brand を中央に固定 */
 .topbar .brand{
-  margin: 0 auto;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  margin: 0 !important;
+  min-width: 0;          /* 220px固定を解除してズレ防止 */
   justify-content: center;
+  text-align: center;
+}
+
+/* brand 内の2行も中央寄せ */
+.topbar .brand > div{
   text-align: center;
 }
