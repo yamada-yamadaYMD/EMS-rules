@@ -307,3 +307,18 @@ header.topbar .actions,
 .actions{
   display: none !important;
 }
+/* =========================
+   トップバー中央寄せ
+   ========================= */
+
+/* トップバーを中央基準に */
+.topbar{
+  justify-content: center;
+}
+
+/* ブランド（🚑 らぶぐらっ！ EMS）を中央に */
+.topbar .brand{
+  margin: 0 auto;
+  justify-content: center;
+  text-align: center;
+}
