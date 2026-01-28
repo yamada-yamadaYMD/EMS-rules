@@ -116,50 +116,131 @@ async function loadText(path){
 }
 
 /* =========================
-   highlight helpers (unchanged)
+   highlight helpers (+ jump)
    ========================= */
+
+// 検索状態（「次へ/前へ」用）
+let searchMarks = [];
+let searchIndex = -1;
+
 function clearHighlights(root){
+  // mark.highlight を全部テキストに戻す
   root.querySelectorAll('mark.highlight').forEach(m => {
-    const text = document.createTextNode(m.textContent);
-    m.replaceWith(text);
+    m.replaceWith(document.createTextNode(m.textContent || ''));
   });
+
+  // 連続するTextNodeをまとめてDOMを綺麗にする
+  root.normalize();
 }
 
+// 目的：ハイライトした mark を配列で返す（ジャンプに使う）
 function highlight(root, query){
   clearHighlights(root);
-  if(!query) return;
+
+  // 検索状態リセット
+  searchMarks = [];
+  searchIndex = -1;
+
+  if(!query) return [];
+
+  const q = query.trim();
+  if(!q) return [];
 
   const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT, {
     acceptNode(node){
       if(!node.nodeValue || !node.nodeValue.trim()) return NodeFilter.FILTER_REJECT;
       const p = node.parentElement;
       if(!p) return NodeFilter.FILTER_REJECT;
+
+      // 触りたくない領域
       if(['SCRIPT','STYLE','CODE','PRE'].includes(p.tagName)) return NodeFilter.FILTER_REJECT;
+
+      // 入力などは除外
+      if(p.closest('button, input, textarea, select')) return NodeFilter.FILTER_REJECT;
+
       return NodeFilter.FILTER_ACCEPT;
     }
   });
 
-  const q = query.toLowerCase();
   const nodes = [];
   while(walker.nextNode()) nodes.push(walker.currentNode);
 
+  const qLower = q.toLowerCase();
+
   nodes.forEach(n => {
-    const t = n.nodeValue;
-    const idx = t.toLowerCase().indexOf(q);
+    const text = n.nodeValue;
+    const textLower = text.toLowerCase();
+
+    let start = 0;
+    let idx = textLower.indexOf(qLower, start);
     if(idx === -1) return;
 
-    const before = document.createTextNode(t.slice(0, idx));
-    const match = document.createElement('mark');
-    match.className = 'highlight';
-    match.textContent = t.slice(idx, idx + query.length);
-    const after = document.createTextNode(t.slice(idx + query.length));
-
     const frag = document.createDocumentFragment();
-    frag.appendChild(before);
-    frag.appendChild(match);
-    frag.appendChild(after);
+
+    while(idx !== -1){
+      // before
+      if(idx > start){
+        frag.appendChild(document.createTextNode(text.slice(start, idx)));
+      }
+
+      // match
+      const mark = document.createElement('mark');
+      mark.className = 'highlight';
+      mark.textContent = text.slice(idx, idx + q.length);
+      frag.appendChild(mark);
+
+      // ★ジャンプ候補として保存
+      searchMarks.push(mark);
+
+      start = idx + q.length;
+      idx = textLower.indexOf(qLower, start);
+    }
+
+    // after
+    if(start < text.length){
+      frag.appendChild(document.createTextNode(text.slice(start)));
+    }
+
     n.replaceWith(frag);
   });
+
+  return searchMarks;
+}
+
+// 指定Indexの mark にスクロールして「今ここ」を強調
+function jumpToMatch(idx){
+  if(!searchMarks.length) return;
+  if(idx < 0) idx = 0;
+  if(idx >= searchMarks.length) idx = searchMarks.length - 1;
+
+  searchIndex = idx;
+  const m = searchMarks[searchIndex];
+  if(!m) return;
+
+  // 以前の「今の一致」強調を外す
+  searchMarks.forEach(x => x.classList.remove('current'));
+
+  // 今の一致を強調
+  m.classList.add('current');
+
+  // 画面内に持ってくる（ヘッダーのsticky分だけ少し余裕）
+  // scrollIntoView は Safari でも安定
+  m.scrollIntoView({ behavior: 'smooth', block: 'center', inline: 'nearest' });
+
+  // 何件目かトーストで表示（邪魔なら消してOK）
+  showToast(`一致: ${searchIndex + 1}/${searchMarks.length}`);
+}
+
+function jumpNext(){
+  if(!searchMarks.length) return;
+  const next = (searchIndex + 1) % searchMarks.length;
+  jumpToMatch(next);
+}
+
+function jumpPrev(){
+  if(!searchMarks.length) return;
+  const prev = (searchIndex - 1 + searchMarks.length) % searchMarks.length;
+  jumpToMatch(prev);
 }
 
 /* =========================
@@ -199,6 +280,10 @@ async function renderPage(page){
 
   const input = document.getElementById('searchInput');
   input.value = '';
+
+  // 検索状態リセット
+  searchMarks = [];
+  searchIndex = -1;
 
   // marked がない場合もわかるように
   if(typeof marked === 'undefined'){
@@ -271,11 +356,43 @@ async function main(){
     }
   });
 
-  // search
+  // search: 入力→ハイライト→最初の一致へジャンプ
   const input = document.getElementById('searchInput');
+
+  // デバウンス（重さ・挙動の変さ防止）
+  let searchTimer = null;
+
   input.addEventListener('input', () => {
-    const root = document.getElementById('pageContainer');
-    highlight(root, input.value.trim());
+    clearTimeout(searchTimer);
+    searchTimer = setTimeout(() => {
+      const root = document.getElementById('pageContainer');
+      const marks = highlight(root, input.value);
+
+      // 最初の一致へ飛ぶ
+      if(marks.length){
+        jumpToMatch(0);
+      }else{
+        // 見つからなかった時だけ軽く通知（いらなければ消してOK）
+        if(input.value.trim()) showToast('一致なし');
+      }
+    }, 120);
+  });
+
+  // Enter で次へ、Shift+Enter で前へ
+  input.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter'){
+      e.preventDefault();
+      if(e.shiftKey) jumpPrev();
+      else jumpNext();
+    }
+    // Escape で検索解除（任意）
+    if(e.key === 'Escape'){
+      input.value = '';
+      const root = document.getElementById('pageContainer');
+      clearHighlights(root);
+      searchMarks = [];
+      searchIndex = -1;
+    }
   });
 }
 
