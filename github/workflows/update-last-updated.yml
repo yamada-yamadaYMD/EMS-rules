@@ -1,0 +1,27 @@
+name: update-last-updated
+
+on:
+  push:
+    branches: ["main"]
+
+permissions:
+  contents: write
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Update assets/config.json lastUpdated (JST)
+        run: |
+          DATE=$(TZ=Asia/Tokyo date +"%Y-%m-%d")
+          node -e "const fs=require('fs'); const p='assets/config.json'; const j=JSON.parse(fs.readFileSync(p,'utf8')); j.lastUpdated='${DATE}'; fs.writeFileSync(p, JSON.stringify(j, null, 2) + '\n');"
+
+      - name: Commit and push if changed
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add assets/config.json
+          git diff --cached --quiet || (git commit -m "chore: update lastUpdated" && git push)
