@@ -297,13 +297,13 @@ a{ color: inherit; text-decoration:none; }
 /* =========================
    不要UIを非表示（指定された箇所のみ）
    ========================= */
-
-/* 上部の説明ヒーロー（EMSルールの大きいカード群） */
+section.hero,
 .hero{
-  display: none;
+  display: none !important;
 }
 
-/* トップバーのナビボタン群（ホーム / EMSルール / Discord など） */
-.topbar .actions{
-  display: none;
+header.topbar .actions,
+.topbar .actions,
+.actions{
+  display: none !important;
 }
