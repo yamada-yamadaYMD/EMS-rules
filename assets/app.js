@@ -60,13 +60,13 @@ function highlight(root, query){
   });
 }
 
-const PAGES = [
-  { key:'ems_rules',     hash:'#ems-rule', title:'EMSルール',           file:'./content/ems_rules.md' },
-  { key:'ems_response',  hash:'#ems-care', title:'EMS対応',             file:'./content/ems_response.md' },
-  { key:'ems_promotion', hash:'#ems-rank', title:'EMS職業別昇進基準',   file:'./content/ems_promotion.md' },
-  { key:'car_list',      hash:'#cars',     title:'車リスト',            file:'./content/car_list.md' },
-  { key:'report_guide',  hash:'#report',   title:'救急隊報告書説明',    file:'./content/report_guide.md' },
-];
+//--const PAGES = [
+  //{ key:'ems_rules',     hash:'#ems-rule', title:'EMSルール',           file:'./content/ems_rules.md' },
+  //{ key:'ems_response',  hash:'#ems-care', title:'EMS対応',             file:'./content/ems_response.md' },
+  //{ key:'ems_promotion', hash:'#ems-rank', title:'EMS職業別昇進基準',   file:'./content/ems_promotion.md' },
+  //{ key:'car_list',      hash:'#cars',     title:'車リスト',            file:'./content/car_list.md' },
+  //{ key:'report_guide',  hash:'#report',   title:'救急隊報告書説明',    file:'./content/report_guide.md' },
+//];
 
 function getPageByHash(hash){
   return PAGES.find(p => p.hash === hash) || PAGES[0];
