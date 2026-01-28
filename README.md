@@ -1,4 +1,4 @@
-# Sorcery City EMS Website (GitHub Pages)
+# らぶぐらっ！EMS Website (GitHub Pages)
 
 静的サイト（HTML/CSS/JS）で **EMSルール/SOP** を公開するテンプレです。  
 そのまま GitHub に上げて **GitHub Pages** で公開できます。
