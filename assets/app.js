@@ -248,11 +248,11 @@ function jumpPrev(){
    ========================= */
 const PAGES = [
   { key:'ems_rules',     hash:'#ems-rule', title:'EMSルール',           file:'./content/ems_rules.md' },
+  { key:'ems_keep', hash:'#ems-keep', title:'EMSとして守ること', file:'./content/ems_keep.md' },
   { key:'ems_response',  hash:'#ems-care', title:'EMS対応',             file:'./content/ems_response.md' },
   { key:'ems_promotion', hash:'#ems-rank', title:'EMS職業別昇進基準',   file:'./content/ems_promotion.md' },
   { key:'car_list',      hash:'#cars',     title:'車リスト',            file:'./content/car_list.md' },
   { key:'report_guide',  hash:'#report',   title:'救急隊報告書説明',    file:'./content/report_guide.md' },
-  { key:'ems_keep', hash:'#ems-keep', title:'EMSとして守ること', file:'./content/ems_keep.md' },
 ];
 
 function getPageByHash(hash){
