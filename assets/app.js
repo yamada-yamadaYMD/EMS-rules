@@ -248,7 +248,7 @@ function jumpPrev(){
    ========================= */
 const PAGES = [
   { key:'ems_rules',     hash:'#ems-rule', title:'EMSルール',           file:'./content/ems_rules.md' },
-  { key:'ems_keep', hash:'#ems-keep', title:'EMSとして守ること', file:'./content/ems_keep.md' },
+  { key:'ems_keep',      hash:'#ems-keep', title:'EMSとして守ること',   file:'./content/ems_keep.md' },
   { key:'ems_response',  hash:'#ems-care', title:'EMS対応',             file:'./content/ems_response.md' },
   { key:'ems_promotion', hash:'#ems-rank', title:'EMS職業別昇進基準',   file:'./content/ems_promotion.md' },
   { key:'car_list',      hash:'#cars',     title:'車リスト',            file:'./content/car_list.md' },
@@ -257,6 +257,10 @@ const PAGES = [
 
 function getPageByHash(hash){
   return PAGES.find(p => p.hash === hash) || PAGES[0];
+}
+
+function getPageByKey(key){
+  return PAGES.find(p => p.key === key) || null;
 }
 
 function setActiveTOC(pageKey){
@@ -307,6 +311,32 @@ async function renderPage(page){
   debugLog('renderPage OK:', page.key);
 }
 
+/* =========================
+   unified navigation
+   ========================= */
+async function navigateToPage(page, mode = 'replace'){ // mode: 'replace' | 'push'
+  if(!page) page = PAGES[0];
+
+  // hash をURLに反映（戻る/進むの整合性も取る）
+  try{
+    if(mode === 'push') history.pushState(null, '', page.hash);
+    else history.replaceState(null, '', page.hash);
+  }catch(_e){
+    // 古い環境保険（普通は来ない）
+    location.hash = page.hash;
+  }
+
+  try{
+    await renderPage(page);
+  }catch(err){
+    console.error(err);
+    showErrorOverlay(err.message, err.stack || String(err));
+  }
+}
+
+/* =========================
+   app main
+   ========================= */
 async function main(){
   // config
   const cfg = await loadJSON('./assets/config.json');
@@ -326,35 +356,50 @@ async function main(){
     });
   }
 
-  // toc click
+  /* -------------------------
+     TOC click (left tabs)
+     - 既存の挙動を壊さない
+     - ただし履歴に残す（push）ほうが自然
+     ------------------------- */
   document.querySelectorAll('#toc a[data-page]').forEach(a => {
     a.addEventListener('click', async (e) => {
       e.preventDefault();
-      const page = PAGES.find(p => p.key === a.dataset.page) || PAGES[0];
-      history.replaceState(null, '', page.hash);
+      const key = a.dataset.page;
+      const page = getPageByKey(key) || PAGES[0];
+      await navigateToPage(page, 'push');
+    });
+  });
 
-      try{
-        await renderPage(page);
-      }catch(err){
-        console.error(err);
-        showErrorOverlay(err.message, err.stack || String(err));
-      }
+  /* -------------------------
+     Header / Hero links to hashes
+     - #ems-keep などを押しても確実に同じ処理を通す
+     ------------------------- */
+  document.querySelectorAll('a[href^="#"]').forEach(a => {
+    // TOCは上で処理済みなので二重登録防止
+    if(a.closest('#toc')) return;
+
+    a.addEventListener('click', async (e) => {
+      const href = a.getAttribute('href');
+      if(!href || !href.startsWith('#')) return;
+
+      // 外部リンクや空hashはスルー
+      if(href === '#') return;
+
+      // hashからページ取得 → 統一ナビゲーション
+      const page = getPageByHash(href);
+      e.preventDefault();
+      await navigateToPage(page, 'push');
     });
   });
 
   // 初期表示（hashから）
   const start = getPageByHash(location.hash);
-  await renderPage(start);
+  await navigateToPage(start, 'replace');
 
-  // hash change（戻る/進む）
+  // hash change（戻る/進む / 直打ち）
   window.addEventListener('hashchange', async () => {
     const page = getPageByHash(location.hash);
-    try{
-      await renderPage(page);
-    }catch(err){
-      console.error(err);
-      showErrorOverlay(err.message, err.stack || String(err));
-    }
+    await navigateToPage(page, 'replace');
   });
 
   // search: 入力→ハイライト→最初の一致へジャンプ
