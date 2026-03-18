@@ -324,3 +324,21 @@ header.topbar .actions,
 .actions{
   display: none !important;
 }
+
+/* ページ系の背景を全部消すテスト */
+.app,
+.layout,
+.content,
+.section,
+.page,
+.panel,
+.tab,
+.tabPage,
+.tab-panel,
+.tab-content,
+main,
+article,
+section {
+  background: transparent !important;
+  background-image: none !important;
+}
