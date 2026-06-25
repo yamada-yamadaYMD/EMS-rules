@@ -34,21 +34,21 @@ function setupModeSwitch(){
    Background rotation
    ========================= */
 const BACKGROUND_IMAGES = [
-  './assets/backgrounds/bg01.webp',
-  './assets/backgrounds/bg02.webp',
-  './assets/backgrounds/bg03.webp',
-  './assets/backgrounds/bg04.webp',
-  './assets/backgrounds/bg05.webp',
-  './assets/backgrounds/bg06.webp',
-  './assets/backgrounds/bg07.webp',
-  './assets/backgrounds/bg08.webp',
-  './assets/backgrounds/bg09.webp',
-  './assets/backgrounds/bg10.webp',
-  './assets/backgrounds/bg11.webp',
-  './assets/backgrounds/bg12.webp',
-  './assets/backgrounds/bg13.webp',
-  './assets/backgrounds/bg14.webp',
-  './assets/backgrounds/bg15.webp',
+  './assets/backgrounds/bg01.webp?v=clear-glass-20260626-1',
+  './assets/backgrounds/bg02.webp?v=clear-glass-20260626-1',
+  './assets/backgrounds/bg03.webp?v=clear-glass-20260626-1',
+  './assets/backgrounds/bg04.webp?v=clear-glass-20260626-1',
+  './assets/backgrounds/bg05.webp?v=clear-glass-20260626-1',
+  './assets/backgrounds/bg06.webp?v=clear-glass-20260626-1',
+  './assets/backgrounds/bg07.webp?v=clear-glass-20260626-1',
+  './assets/backgrounds/bg08.webp?v=clear-glass-20260626-1',
+  './assets/backgrounds/bg09.webp?v=clear-glass-20260626-1',
+  './assets/backgrounds/bg10.webp?v=clear-glass-20260626-1',
+  './assets/backgrounds/bg11.webp?v=clear-glass-20260626-1',
+  './assets/backgrounds/bg12.webp?v=clear-glass-20260626-1',
+  './assets/backgrounds/bg13.webp?v=clear-glass-20260626-1',
+  './assets/backgrounds/bg14.webp?v=clear-glass-20260626-1',
+  './assets/backgrounds/bg15.webp?v=clear-glass-20260626-1',
 ];
 
 function setupBackgroundRotator(){
