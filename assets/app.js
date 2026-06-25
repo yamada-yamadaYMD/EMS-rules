@@ -428,19 +428,7 @@ async function main(){
   document.getElementById('tagline').textContent = cfg.tagline || '';
   document.getElementById('brandEmoji').textContent = cfg.brandEmoji || '🚑';
   document.getElementById('contact').textContent = cfg.contact || '—';
-
-  const discordBtn = document.getElementById('discordBtn');
-  if(discordBtn){
-    discordBtn.href = cfg.discord && cfg.discord !== '[TBD]' ? cfg.discord : '#';
-    if(discordBtn.href.endsWith('#')){
-      discordBtn.addEventListener('click', (e) => {
-        e.preventDefault();
-        alert('Discordリンクが未設定です。assets/config.json を編集してね。');
-      });
-    }
-  }
-
-  /* -------------------------
+/* -------------------------
      TOC click (left tabs)
      - 既存の挙動を壊さない
      - ただし履歴に残す（push）ほうが自然
