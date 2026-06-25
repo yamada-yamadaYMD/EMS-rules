@@ -11,6 +11,12 @@
   <link rel="stylesheet" href="./assets/styles.css" />
 </head>
 <body>
+  <div class="bgRotator" aria-hidden="true">
+    <div class="bgSlide is-visible" id="bgSlideA"></div>
+    <div class="bgSlide" id="bgSlideB"></div>
+    <div class="bgOverlay"></div>
+  </div>
+
   <div class="app">
     <header class="topbar">
       <div class="brand">
@@ -19,19 +25,6 @@
           <div class="title" id="siteTitle">らぶぐらっ！ EMS</div>
           <div class="tagline" id="tagline">ルール / 公開ページ</div>
         </div>
-      </div>
-
-      <div class="actions">
-        <a class="btn ghost" href="./" aria-current="page">ホーム</a>
-        <a class="btn ghost" href="#ems-rule">EMSルール</a>
-
-        <!-- ★追加：守ること -->
-        <a class="btn ghost" href="#ems-keep">守ること</a>
-
-        <a class="btn ghost" href="#ems-care">EMS対応</a>
-        <a class="btn ghost" href="#ems-rank">昇進基準</a>
-        <a class="btn ghost" href="#cars">車リスト</a>
-        <a class="btn primary" id="discordBtn" href="#" target="_blank" rel="noreferrer">Discord</a>
       </div>
     </header>
 
@@ -104,7 +97,14 @@
         <section id="page" class="section">
           <div class="sectionHead">
             <h2 id="pageTitle">—</h2>
-            <div class="pill" id="pagePill">content/*.md</div>
+            <div class="sectionTools">
+              <div class="modeSwitch" id="modeSwitch" aria-label="表示モード">
+                <button class="modeBtn" type="button" data-mode="light">ライト</button>
+                <button class="modeBtn" type="button" data-mode="dark">ダーク</button>
+                <button class="modeBtn" type="button" data-mode="minna">みんな</button>
+              </div>
+              <div class="pill" id="pagePill">content/*.md</div>
+            </div>
           </div>
 
           <!-- ここにMarkdownが表示される -->

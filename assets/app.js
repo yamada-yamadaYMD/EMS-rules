@@ -1,7 +1,93 @@
+
+/* =========================
+   Display mode
+   ========================= */
+const MODE_KEY = 'ems-site-mode';
+
+function getInitialMode(){
+  const saved = localStorage.getItem(MODE_KEY);
+  if(['light','dark','minna'].includes(saved)) return saved;
+  return 'light';
+}
+
+function applyMode(mode){
+  const theme = mode === 'light' ? 'light' : 'dark';
+  document.documentElement.dataset.mode = mode;
+  document.documentElement.dataset.theme = theme;
+  localStorage.setItem(MODE_KEY, mode);
+
+  document.querySelectorAll('.modeBtn').forEach(btn => {
+    const active = btn.dataset.mode === mode;
+    btn.classList.toggle('active', active);
+    btn.setAttribute('aria-pressed', active ? 'true' : 'false');
+  });
+}
+
+function setupModeSwitch(){
+  applyMode(getInitialMode());
+  document.querySelectorAll('.modeBtn').forEach(btn => {
+    btn.addEventListener('click', () => applyMode(btn.dataset.mode));
+  });
+}
+
+/* =========================
+   Background rotation
+   ========================= */
+const BACKGROUND_IMAGES = [
+  './assets/backgrounds/bg01.webp',
+  './assets/backgrounds/bg02.webp',
+  './assets/backgrounds/bg03.webp',
+  './assets/backgrounds/bg04.webp',
+  './assets/backgrounds/bg05.webp',
+  './assets/backgrounds/bg06.webp',
+  './assets/backgrounds/bg07.webp',
+  './assets/backgrounds/bg08.webp',
+  './assets/backgrounds/bg09.webp',
+  './assets/backgrounds/bg10.webp',
+  './assets/backgrounds/bg11.webp',
+  './assets/backgrounds/bg12.webp',
+  './assets/backgrounds/bg13.webp',
+  './assets/backgrounds/bg14.webp',
+  './assets/backgrounds/bg15.webp',
+];
+
+function setupBackgroundRotator(){
+  const slideA = document.getElementById('bgSlideA');
+  const slideB = document.getElementById('bgSlideB');
+  if(!slideA || !slideB || !BACKGROUND_IMAGES.length) return;
+
+  let currentIndex = 0;
+  let active = slideA;
+  let idle = slideB;
+
+  const applyImage = (el, src) => {
+    el.style.backgroundImage = `url(${src})`;
+  };
+
+  const nextIndex = () => (currentIndex + 1) % BACKGROUND_IMAGES.length;
+
+  applyImage(active, BACKGROUND_IMAGES[currentIndex]);
+  active.classList.add('is-visible');
+
+  if(BACKGROUND_IMAGES.length > 1){
+    applyImage(idle, BACKGROUND_IMAGES[nextIndex()]);
+  }
+
+  if(BACKGROUND_IMAGES.length === 1) return;
+
+  setInterval(() => {
+    currentIndex = nextIndex();
+    applyImage(idle, BACKGROUND_IMAGES[currentIndex]);
+    idle.classList.add('is-visible');
+    active.classList.remove('is-visible');
+    [active, idle] = [idle, active];
+  }, 6500);
+}
+
 /* =========================
    Debug helpers
    ========================= */
-const DEBUG = true; // ←本番で消したい時は false
+const DEBUG = false; // ←エラー確認したい時だけ true
 
 function debugLog(...args){
   if(DEBUG) console.log('[EMS DEBUG]', ...args);
@@ -265,13 +351,7 @@ function getPageByKey(key){
 
 function setActiveTOC(pageKey){
   document.querySelectorAll('#toc a[data-page]').forEach(a => {
-    if(a.dataset.page === pageKey){
-      a.style.background = 'rgba(255,255,255,.06)';
-      a.style.borderColor = 'rgba(255,255,255,.10)';
-    }else{
-      a.style.background = '';
-      a.style.borderColor = '';
-    }
+    a.classList.toggle('active', a.dataset.page === pageKey);
   });
 }
 
@@ -338,6 +418,9 @@ async function navigateToPage(page, mode = 'replace'){ // mode: 'replace' | 'pus
    app main
    ========================= */
 async function main(){
+  setupModeSwitch();
+  setupBackgroundRotator();
+
   // config
   const cfg = await loadJSON('./assets/config.json');
 
