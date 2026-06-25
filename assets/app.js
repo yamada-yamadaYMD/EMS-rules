@@ -430,12 +430,14 @@ async function main(){
   document.getElementById('contact').textContent = cfg.contact || '—';
 
   const discordBtn = document.getElementById('discordBtn');
-  discordBtn.href = cfg.discord && cfg.discord !== '[TBD]' ? cfg.discord : '#';
-  if(discordBtn.href.endsWith('#')){
-    discordBtn.addEventListener('click', (e) => {
-      e.preventDefault();
-      alert('Discordリンクが未設定です。assets/config.json を編集してね。');
-    });
+  if(discordBtn){
+    discordBtn.href = cfg.discord && cfg.discord !== '[TBD]' ? cfg.discord : '#';
+    if(discordBtn.href.endsWith('#')){
+      discordBtn.addEventListener('click', (e) => {
+        e.preventDefault();
+        alert('Discordリンクが未設定です。assets/config.json を編集してね。');
+      });
+    }
   }
 
   /* -------------------------
