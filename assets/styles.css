@@ -701,3 +701,60 @@ a{
     grid-template-columns:1fr;
   }
 }
+
+
+/* =========================
+   Minna mode: stronger glass / visible background
+   ========================= */
+[data-mode="minna"] .bgOverlay{
+  background:
+    linear-gradient(to bottom, rgba(2,6,23,.05), rgba(2,6,23,.12)),
+    linear-gradient(135deg, rgba(15,23,42,.03), rgba(2,6,23,.01)) !important;
+}
+
+[data-mode="minna"] .topbar{
+  background: rgba(15, 23, 42, .10) !important;
+  border-bottom: 1px solid rgba(255,255,255,.16) !important;
+  box-shadow: 0 8px 18px rgba(0,0,0,.10) !important;
+  backdrop-filter: blur(6px) saturate(125%) !important;
+  -webkit-backdrop-filter: blur(6px) saturate(125%) !important;
+}
+
+[data-mode="minna"] .card,
+[data-mode="minna"] .heroCard,
+[data-mode="minna"] .mini,
+[data-mode="minna"] .md,
+[data-mode="minna"] .faqItem{
+  background: rgba(15, 23, 42, .07) !important;
+  border: 1px solid rgba(255,255,255,.18) !important;
+  box-shadow: 0 8px 18px rgba(0,0,0,.10) !important;
+  backdrop-filter: blur(6px) saturate(120%) !important;
+  -webkit-backdrop-filter: blur(6px) saturate(120%) !important;
+}
+
+[data-mode="minna"] .modeSwitch{
+  background: rgba(15,23,42,.08) !important;
+  border-color: rgba(255,255,255,.18) !important;
+  box-shadow: 0 6px 16px rgba(0,0,0,.10) !important;
+  backdrop-filter: blur(6px) saturate(125%) !important;
+  -webkit-backdrop-filter: blur(6px) saturate(125%) !important;
+}
+
+[data-mode="minna"] .input{
+  background: rgba(15,23,42,.08) !important;
+  border-color: rgba(255,255,255,.18) !important;
+  backdrop-filter: blur(5px) !important;
+  -webkit-backdrop-filter: blur(5px) !important;
+}
+
+[data-mode="minna"] .toc a.active{
+  background: rgba(96,165,250,.24) !important;
+  border-color: rgba(96,165,250,.55) !important;
+}
+
+[data-mode="minna"] .md,
+[data-mode="minna"] .card,
+[data-mode="minna"] .topbar,
+[data-mode="minna"] .modeSwitch{
+  text-shadow: 0 2px 4px rgba(0,0,0,.45) !important;
+}
