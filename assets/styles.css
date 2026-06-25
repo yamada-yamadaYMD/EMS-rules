@@ -758,3 +758,86 @@ a{
 [data-mode="minna"] .modeSwitch{
   text-shadow: 0 2px 4px rgba(0,0,0,.45) !important;
 }
+
+
+/* =========================
+   Minna mode: click background to scatter UI
+   ========================= */
+[data-mode="minna"] .topbar,
+[data-mode="minna"] .sidebar,
+[data-mode="minna"] .sectionHead,
+[data-mode="minna"] .md,
+[data-mode="minna"] .footer{
+  transition:
+    transform .55s cubic-bezier(.2,.8,.2,1),
+    opacity .45s ease,
+    filter .45s ease;
+}
+
+[data-mode="minna"].ui-scattered .topbar{
+  transform: translateY(-110%);
+  opacity:.16;
+  pointer-events:none;
+}
+
+[data-mode="minna"].ui-scattered .sidebar{
+  transform: translateX(-115%) rotate(-2deg);
+  opacity:.10;
+  pointer-events:none;
+}
+
+[data-mode="minna"].ui-scattered .sectionHead{
+  transform: translate(18vw, -140%) rotate(1deg);
+  opacity:.14;
+  pointer-events:none;
+}
+
+[data-mode="minna"].ui-scattered .md{
+  transform: translate(34vw, 18vh) rotate(1.5deg) scale(.92);
+  opacity:.08;
+  pointer-events:none;
+}
+
+[data-mode="minna"].ui-scattered .footer{
+  transform: translateY(120%);
+  opacity:.08;
+  pointer-events:none;
+}
+
+[data-mode="minna"].ui-scattered .bgOverlay{
+  background:
+    linear-gradient(to bottom, rgba(2,6,23,.02), rgba(2,6,23,.06)),
+    linear-gradient(135deg, rgba(15,23,42,.01), rgba(2,6,23,.00)) !important;
+}
+
+[data-mode="minna"].ui-scattered{
+  cursor: zoom-in;
+}
+
+[data-mode="minna"].ui-scattered::after{
+  content:"クリックでUIを戻す";
+  position:fixed;
+  right:18px;
+  bottom:18px;
+  z-index:50;
+  padding:10px 14px;
+  border-radius:999px;
+  color:rgba(255,255,255,.86);
+  background:rgba(2,6,23,.28);
+  border:1px solid rgba(255,255,255,.18);
+  backdrop-filter: blur(10px);
+  -webkit-backdrop-filter: blur(10px);
+  font-size:13px;
+  font-weight:800;
+  pointer-events:none;
+}
+
+@media (max-width:980px){
+  [data-mode="minna"].ui-scattered .sectionHead{
+    transform: translateY(-130%);
+  }
+
+  [data-mode="minna"].ui-scattered .md{
+    transform: translateX(105%) scale(.94);
+  }
+}

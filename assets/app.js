@@ -84,6 +84,45 @@ function setupBackgroundRotator(){
   }, 6500);
 }
 
+
+function setupUiScatter(){
+  const root = document.documentElement;
+
+  document.addEventListener('click', (e) => {
+    const mode = root.dataset.mode;
+    if(mode !== 'minna') return;
+
+    const target = e.target;
+    if(!(target instanceof Element)) return;
+
+    // UIが通常状態のときは、UI上のクリックでは散らばらないようにする
+    const isScattered = root.classList.contains('ui-scattered');
+    const clickedUi = target.closest(
+      '.topbar, .sidebar, .sectionHead, .md, .footer, button, a, input, textarea, select'
+    );
+
+    if(!isScattered && clickedUi) return;
+
+    root.classList.toggle('ui-scattered');
+  });
+
+  // ライト/ダークに切り替えたら散らばり状態は解除
+  document.querySelectorAll('.modeBtn').forEach(btn => {
+    btn.addEventListener('click', () => {
+      if(btn.dataset.mode !== 'minna'){
+        root.classList.remove('ui-scattered');
+      }
+    });
+  });
+
+  // Escキーでも戻せる保険
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape'){
+      root.classList.remove('ui-scattered');
+    }
+  });
+}
+
 /* =========================
    Debug helpers
    ========================= */
@@ -420,6 +459,7 @@ async function navigateToPage(page, mode = 'replace'){ // mode: 'replace' | 'pus
 async function main(){
   setupModeSwitch();
   setupBackgroundRotator();
+  setupUiScatter();
 
   // config
   const cfg = await loadJSON('./assets/config.json');
