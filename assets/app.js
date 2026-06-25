@@ -344,7 +344,6 @@ async function main(){
   document.getElementById('siteTitle').textContent = cfg.siteTitle || 'EMS';
   document.getElementById('tagline').textContent = cfg.tagline || '';
   document.getElementById('brandEmoji').textContent = cfg.brandEmoji || '🚑';
-  document.getElementById('lastUpdated').textContent = cfg.lastUpdated || '—';
   document.getElementById('contact').textContent = cfg.contact || '—';
 
   const discordBtn = document.getElementById('discordBtn');
